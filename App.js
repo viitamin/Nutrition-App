@@ -3,7 +3,7 @@ import { createStackNavigator } from "@react-navigation/stack";
 import { NavigationContainer } from "@react-navigation/native";
 
 import Login from "./screens/Login";
-import Barcode from "./screens/Barcode";
+import Barcode from "./screens/Scanner";
 
 const Stack = createStackNavigator();
 
@@ -11,7 +11,7 @@ export default function App() {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen name="Barcode" component={Barcode} />
+        <Stack.Screen name="Scanner" component={Scanner} />
         <Stack.Screen name="Login" component={Login} />
       </Stack.Navigator>
     </NavigationContainer>
