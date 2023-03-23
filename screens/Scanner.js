@@ -22,18 +22,18 @@ export default function Scanner({ navigation }) {
     setBarcodeNum(data);
     console.log(barcodeNum);
   };
-
-  const getProductNumber = async () => {
+  //---------------------------------------------------api 연결 함수---------------------------------------------------------------------------
+  const getProductNumberAPI = async () => {
     const response = await fetch(
       `http://openapi.foodsafetykorea.go.kr/api/a89f4295c0c040c4adaa/C005/json/1/100/BAR_CD=88002798` //${barcodeNum}
     );
     const json = await response.json();
     console.log(json.C005.row[0].PRDLST_REPORT_NO);
     setProductNum(json.C005.row[0].PRDLST_REPORT_NO);
-    console.log("프로덕트넘:" + productNum);
+    return json.C005.row[0].PRDLST_REPORT_NO;
   };
 
-  const getNutritionInfo = async () => {
+  const getNutritionInfoAPI = async (pn) => {
     const response = await fetch(
       `https://apis.data.go.kr/B553748/CertImgListService/getCertImgListService?ServiceKey=G5ifl7ixJfo7T2HJR6b7P%2FIvr4v6ILirbBv1Yj6rNUEJjZqo0ZLCAV8HWzq2NG8Dx19gpJiJdT%2FFVhddXrDSVw%3D%3D&prdlstReportNo=1984044800212&returnType=json` //${ProductNum}
     );
@@ -41,15 +41,19 @@ export default function Scanner({ navigation }) {
     console.log(json.body.items[0].item.nutrient);
     setNutrientInfo(json.body.items[0].item.nutrient);
   };
-  //.items[0].item.nutrient
+  //---------------------------------------------------api 연결 함수 종료---------------------------------------------------------------------------
+
+  //---------------------------------------------------구현부 시작---------------------------------------------------------------------------
+
   useEffect(() => {
     askForCameraPermission();
   }, []);
-  useEffect(() => {
-    getProductNumber();
-  }, []);
 
-  getNutritionInfo();
+  if (barcodeNum !== null) {
+    useEffect(() => {
+      getNutritionInfoAPI(getProductNumberAPI());
+    }, []);
+  }
 
   return (
     <View style={styles.container}>
@@ -67,6 +71,7 @@ export default function Scanner({ navigation }) {
           title={"scan again"}
           onPress={() => {
             setScanned(false);
+            setBarcodeNum(null);
           }}
         />
       </View>
