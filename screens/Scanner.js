@@ -9,11 +9,9 @@ import {
   Alert,
 } from "react-native";
 import { BarCodeScanner } from "expo-barcode-scanner";
+import { HACCP_API_KEY, PRODUCT_NUM_API_KEY } from "../private/apiKey";
 
 let NUTRIENT = null;
-const HACCP_API_KEY =
-  "G5ifl7ixJfo7T2HJR6b7P%2FIvr4v6ILirbBv1Yj6rNUEJjZqo0ZLCAV8HWzq2NG8Dx19gpJiJdT%2FFVhddXrDSVw%3D%3D";
-const PRODUCT_NUM_API_KEY = "a89f4295c0c040c4adaa";
 
 export default function Scanner({ navigation }) {
   const [permission, setPermission] = useState(false);
