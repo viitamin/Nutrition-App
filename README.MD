@@ -29,3 +29,7 @@
 ---
 
 ### 기술스택
+
+### ERD
+
+![image](https://user-images.githubusercontent.com/78553350/229333218-e9136fdf-e0d6-4175-b346-4b90632a2698.png)
