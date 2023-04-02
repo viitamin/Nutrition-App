@@ -20,12 +20,48 @@ export default function Scanner({ navigation }) {
   const [nutrientInfo, setNutrientInfo] = useState(null);
   const [productName, setProductName] = useState(null);
   const [itemList, setItemList] = useState([]);
+  const [quantity, setQuantity] = useState(1);
+
+  const increaseQuantity = () => {
+    setQuantity(quantity + 1);
+  };
+  const decreaseQuantity = () => {
+    if (quantity > 1) setQuantity(quantity - 1);
+  };
 
   const addItem = (productName, nutritionInfo) => {
     //동적 객체배열입니다.
-    const newItem = { name: productName, nutrition: nutritionInfo };
+    const newItem = {
+      id: [Date.now()],
+      name: productName,
+      nutrition: nutritionInfo,
+    };
+
     const newItems = [...itemList, newItem];
     setItemList(newItems);
+  };
+
+  const deleteItem = (key) => {
+    console.log(key);
+    const items = itemList.filter((item) => key !== item.id);
+    setItemList(items);
+  };
+
+  const listUp = (name, nutrient) => {
+    if (name !== null) {
+      Alert.alert("이름확인하겠습니다", `${name}이(가) 맞나요?`, [
+        {
+          text: "Yes",
+          onPress: () => {
+            const existingName = itemList.find((item) => name === item.name);
+            if (existingName) {
+              alert("이미 등록됨");
+            } else addItem(name, nutrient);
+          },
+        },
+        { text: "No", onPress: () => "꺼지셈" },
+      ]);
+    }
   };
 
   const askForCameraPermission = async () => {
@@ -37,6 +73,7 @@ export default function Scanner({ navigation }) {
     setScanned(true);
     console.log("바코드 타입: " + type + " / 바코드 번호: " + data);
     setBarcodeNum(data);
+    await setBarcodeNum(data);
     console.log("시발" + barcodeNum);
     const productNumber = await getProductNumberAPI(data);
     await getNutritionInfoAPI(productNumber);
@@ -65,18 +102,9 @@ export default function Scanner({ navigation }) {
     NUTRIENT = nutrient;
     console.log("상품 이름1: " + name);
     console.log(NUTRIENT);
-    if (name !== null) {
-      Alert.alert("이름확인하겠습니다", `${name}이(가) 맞나요?`, [
-        {
-          text: "Yes",
-          onPress: () => {
-            addItem(name, nutrient);
-          },
-        },
-        { text: "No", onPress: () => "꺼지셈" },
-      ]);
-    }
+    listUp(name, nutrient);
   };
+
   //---------------------------------------------------api 연결 함수 종료---------------------------------------------------------------------------
 
   //  1. 카메라 승인요청
@@ -113,8 +141,20 @@ export default function Scanner({ navigation }) {
 
       <ScrollView style={styles.checkScrollView}>
         {itemList.map((item) => (
-          <View style={styles.productCheck} key={item.name}>
-            <Text style={styles.checkText}>{item.name} 추가</Text>
+          <View style={styles.productCheck} key={item.id}>
+            <Text style={styles.checkText}>
+              {item.name} 추가
+              <TouchableOpacity onPress={decreaseQuantity}>
+                <Text>➖</Text>
+              </TouchableOpacity>
+              {quantity}
+              <TouchableOpacity onPress={increaseQuantity}>
+                <Text>➕</Text>
+              </TouchableOpacity>
+              <TouchableOpacity onPress={() => deleteItem(item.id)}>
+                <Text>❌</Text>
+              </TouchableOpacity>
+            </Text>
           </View>
         ))}
       </ScrollView>
@@ -161,6 +201,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
     flexDirection: "row",
     alignItems: "center",
+    justifyContent: "space-between",
     padding: 10,
     margin: 5,
     width: 350,
