@@ -11,8 +11,6 @@ import {
 import { BarCodeScanner } from "expo-barcode-scanner";
 import { HACCP_API_KEY, PRODUCT_NUM_API_KEY } from "../private/apiKey";
 
-let NUTRIENT = null;
-
 export default function Scanner({ navigation }) {
   const [permission, setPermission] = useState(false);
   const [scanned, setScanned] = useState(false);
@@ -22,23 +20,36 @@ export default function Scanner({ navigation }) {
   const [itemList, setItemList] = useState([]);
   const [quantity, setQuantity] = useState(1);
 
-  const increaseQuantity = () => {
-    setQuantity(quantity + 1);
+  const increaseQuantity = (id) => {
+    setItemList(
+      itemList.map((item) =>
+        item.id === id ? { ...item, quantity: item.quantity + 1 } : item
+      )
+    );
   };
-  const decreaseQuantity = () => {
-    if (quantity > 1) setQuantity(quantity - 1);
+
+  const decreaseQuantity = (id) => {
+    setItemList(
+      itemList.map((item) =>
+        item.id === id && item.quantity > 1
+          ? { ...item, quantity: item.quantity - 1 }
+          : item
+      )
+    );
   };
 
   const addItem = (productName, nutritionInfo) => {
-    //동적 객체배열입니다.
     const newItem = {
       id: [Date.now()],
       name: productName,
       nutrition: nutritionInfo,
+      quantity: 1,
     };
 
     const newItems = [...itemList, newItem];
     setItemList(newItems);
+
+    console.log(itemList);
   };
 
   const deleteItem = (key) => {
@@ -59,7 +70,7 @@ export default function Scanner({ navigation }) {
             } else addItem(name, nutrient);
           },
         },
-        { text: "No", onPress: () => "꺼지셈" },
+        { text: "No", onPress: () => "등록취소됨" },
       ]);
     }
   };
@@ -99,9 +110,7 @@ export default function Scanner({ navigation }) {
     setNutrientInfo(nutrient);
     setProductName(name);
 
-    NUTRIENT = nutrient;
     console.log("상품 이름1: " + name);
-    console.log(NUTRIENT);
     listUp(name, nutrient);
   };
 
@@ -142,26 +151,26 @@ export default function Scanner({ navigation }) {
       <ScrollView style={styles.checkScrollView}>
         {itemList.map((item) => (
           <View style={styles.productCheck} key={item.id}>
-            <Text style={styles.checkText}>
-              {item.name} 추가
-              <TouchableOpacity onPress={decreaseQuantity}>
+            <Text style={styles.checkText}>{item.name} 추가</Text>
+            <View style={styles.checkIcon}>
+              <TouchableOpacity onPress={() => decreaseQuantity(item.id)}>
                 <Text>➖</Text>
               </TouchableOpacity>
-              {quantity}
-              <TouchableOpacity onPress={increaseQuantity}>
+              <Text>{item.quantity}</Text>
+              <TouchableOpacity onPress={() => increaseQuantity(item.id)}>
                 <Text>➕</Text>
               </TouchableOpacity>
               <TouchableOpacity onPress={() => deleteItem(item.id)}>
                 <Text>❌</Text>
               </TouchableOpacity>
-            </Text>
+            </View>
           </View>
         ))}
       </ScrollView>
 
       <Button
         title={"Checkboxes have been checked"}
-        onPress={() => navigation.navigate("Login")}
+        onPress={() => navigation.navigate("Analyzer", { itemList: itemList })}
       />
     </View>
   );
@@ -218,5 +227,3 @@ const styles = StyleSheet.create({
     width: 60,
   },
 });
-
-export { NUTRIENT };

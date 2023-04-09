@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { Text, TouchableOpacity, View, Button } from "react-native";
-import Barcode from "./Scanner";
 
-import { NUTRIENT } from "./Scanner";
-export default function Login({ navigation }) {
-  const text = NUTRIENT;
+export default function Analyzer({ navigation, route }) {
+  const itemList = route.params.itemList;
+  console.log(itemList + "ㅅ비ㅏㄹ비사빌바ㅓ");
+  const text = itemList[0].nutrition;
   const calorieRegex = /열량\s?(\d+\.?\d+)/;
   const carbRegex = /탄수화물\s?(\d+\.?\d+)/;
   const sugarRegex = /당류\s?(\d+\.?\d+)/;
@@ -41,7 +41,7 @@ export default function Login({ navigation }) {
 
   return (
     <View>
-      <Text>Login</Text>
+      <Text>분석</Text>
       <Button title={"Hi"} onPress={() => navigation.navigate("Scanner")} />
       <Text>Go To Welcome</Text>
 
