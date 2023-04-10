@@ -27,7 +27,7 @@ export default function User({ navigation }) {
       <TextInput placeholder={"키"} keyboardType="phone-pad" />
       <TextInput placeholder={"몸무게"} />
 
-      <Text onPress={() => navigation.navigate("Scanner")}>확인</Text>
+      <Text onPress={() => navigation.navigate("Home")}>확인</Text>
     </View>
   );
 }

@@ -38,7 +38,7 @@ export default function User({ navigation }) {
       />
       <Text onPress={() => navigation.navigate("BodyInfo")}>확인</Text>
       <Button
-        title={"안녕~~~~~"}
+        title={"Next Page"}
         onPress={() => navigation.navigate("BodyInfo")}
       />
     </View>

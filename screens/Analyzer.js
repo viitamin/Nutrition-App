@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { Text, TouchableOpacity, View, Button } from "react-native";
+import { Text, TouchableOpacity, View, Button, Dimensions } from "react-native";
+import { PieChart } from "react-native-chart-kit";
+
+const SCREEN_WIDTH = Dimensions.get("window").width;
 
 export default function Analyzer({ navigation, route }) {
   const itemList = route.params.itemList;
-  console.log(itemList + "ㅅ비ㅏㄹ비사빌바ㅓ");
+
   const text = itemList[0].nutrition;
   const calorieRegex = /열량\s?(\d+\.?\d+)/;
   const carbRegex = /탄수화물\s?(\d+\.?\d+)/;
@@ -38,12 +41,39 @@ export default function Analyzer({ navigation, route }) {
   };
 
   console.log(nutrient);
+  const chartConfig = {
+    backgroundGradientFrom: "#1E2923",
+    backgroundGradientTo: "#08130D",
+    color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
+  };
+  const NutritionData = [
+    {
+      name: "탄수화물",
+      amount: parseInt(nutrient.carb),
+      color: "tomato",
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 15,
+    },
+
+    {
+      name: "단백질",
+      amount: parseInt(nutrient.protein),
+      color: "lime",
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 15,
+    },
+    {
+      name: "지방",
+      amount: parseInt(nutrient.fat),
+      color: "skyblue",
+      legendFontColor: "#7F7F7F",
+      legendFontSize: 15,
+    },
+  ];
 
   return (
     <View>
-      <Text>분석</Text>
-      <Button title={"Hi"} onPress={() => navigation.navigate("Scanner")} />
-      <Text>Go To Welcome</Text>
+      <Text>분석 결과</Text>
 
       <Text>
         칼로리: {nutrient.calorie}
@@ -65,6 +95,27 @@ export default function Analyzer({ navigation, route }) {
         나트륨: {nutrient.sodium}
         {"\n"}
       </Text>
+      <View>
+        <Text>
+          당은 탄수화물의 하위항목, 트랜스지방과 포화지방은 지방의
+          하위항목입니다.
+        </Text>
+        <PieChart
+          data={NutritionData}
+          width={SCREEN_WIDTH}
+          height={220}
+          chartConfig={chartConfig}
+          accessor="amount"
+          backgroundColor="transparent"
+          paddingLeft="15"
+        />
+      </View>
+
+      <Text onPress={() => navigation.navigate("Home")}>저장후 홈으로</Text>
+      <Button
+        title={"Scanner"}
+        onPress={() => navigation.navigate("Scanner")}
+      />
     </View>
   );
 }

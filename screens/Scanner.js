@@ -38,7 +38,7 @@ export default function Scanner({ navigation }) {
     );
   };
 
-  const addItem = (productName, nutritionInfo) => {
+  const addItem = async (productName, nutritionInfo) => {
     const newItem = {
       id: [Date.now()],
       name: productName,
@@ -48,8 +48,6 @@ export default function Scanner({ navigation }) {
 
     const newItems = [...itemList, newItem];
     setItemList(newItems);
-
-    console.log(itemList);
   };
 
   const deleteItem = (key) => {
@@ -63,11 +61,11 @@ export default function Scanner({ navigation }) {
       Alert.alert("이름확인하겠습니다", `${name}이(가) 맞나요?`, [
         {
           text: "Yes",
-          onPress: () => {
+          onPress: async () => {
             const existingName = itemList.find((item) => name === item.name);
             if (existingName) {
               alert("이미 등록됨");
-            } else addItem(name, nutrient);
+            } else await addItem(name, nutrient);
           },
         },
         { text: "No", onPress: () => "등록취소됨" },
@@ -80,12 +78,13 @@ export default function Scanner({ navigation }) {
     setPermission(granted ? true : false);
     console.log(granted);
   };
+
   const handleBarCodeScanned = async ({ type, data }) => {
     setScanned(true);
     console.log("바코드 타입: " + type + " / 바코드 번호: " + data);
     setBarcodeNum(data);
-    await setBarcodeNum(data);
-    console.log("시발" + barcodeNum);
+
+    console.log("바코드번호: " + barcodeNum);
     const productNumber = await getProductNumberAPI(data);
     await getNutritionInfoAPI(productNumber);
   };
@@ -95,6 +94,7 @@ export default function Scanner({ navigation }) {
       `http://openapi.foodsafetykorea.go.kr/api/${PRODUCT_NUM_API_KEY}/C005/json/1/100/BAR_CD=${barcodeNum}` //${barcodeNum}
     );
     const json = await response.json();
+    console.log(json);
     const productNumber = json.C005.row[0].PRDLST_REPORT_NO;
     console.log("품목제조보고번호: " + productNumber);
     return productNumber;
@@ -169,7 +169,7 @@ export default function Scanner({ navigation }) {
       </ScrollView>
 
       <Button
-        title={"Checkboxes have been checked"}
+        title={"다음"}
         onPress={() => navigation.navigate("Analyzer", { itemList: itemList })}
       />
     </View>
