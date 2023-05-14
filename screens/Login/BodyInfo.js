@@ -29,5 +29,5 @@ export default function User({ navigation }) {
 
       <Text onPress={() => navigation.navigate("Home")}>확인</Text>
     </View>
-  );
+  );  
 }

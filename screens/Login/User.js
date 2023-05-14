@@ -10,6 +10,13 @@ import {
   TextInput,
 } from "react-native";
 
+
+
+
+
+
+
+
 export default function User({ navigation }) {
   const [name, setName] = useState("");
   const [password, setPassword] = useState("");
@@ -43,4 +50,4 @@ export default function User({ navigation }) {
       />
     </View>
   );
-}
+}<></>
