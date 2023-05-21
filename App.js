@@ -7,6 +7,8 @@ import Scanner from "./screens/Scanner";
 import User from "./screens/Login/User";
 import BodyInfo from "./screens/Login/BodyInfo";
 import Home from "./screens/Home";
+import Search from "./screens/Search";
+import SearchAnalyzer from "./screens/SearchAnalyzer";
 
 const Stack = createStackNavigator();
 
@@ -19,6 +21,8 @@ export default function App() {
         <Stack.Screen name="Scanner" component={Scanner} />
         <Stack.Screen name="Analyzer" component={Analyzer} />
         <Stack.Screen name="Home" component={Home} />
+        <Stack.Screen name="Search" component={Search} />
+        <Stack.Screen name="SearchAnalyzer" component={SearchAnalyzer} />
       </Stack.Navigator>
     </NavigationContainer>
   );

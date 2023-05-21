@@ -4,16 +4,64 @@ import {
   Text,
   StyleSheet,
   Button,
-  ScrollView,
   TouchableOpacity,
   Alert,
+  TextInput,
+  FlatList,
 } from "react-native";
-import { SearchBar } from "react-native-screens";
+
+import foodName from "../FoodName";
 
 export default function Search({ navigation }) {
+  const [searchText, setSearchText] = useState("");
+  const [searchResult, setSearchResult] = useState([]);
+
+  const handleSearch = (text) => {
+    const filteredData = foodName.filter((item) => {
+      return item.name.includes(text);
+    });
+    console.log(filteredData);
+    setSearchText(text);
+    setSearchResult(filteredData);
+  };
+
+  const handleTouch = (item) => {
+    setSearchText(item.name);
+    setSearchResult(item);
+  };
+
   return (
     <View>
-      <SearchBar placeholder={"음식을 입력해주세요"} />
+      <Text>{foodName[0].name}</Text>
+      <TextInput
+        placeholder={"찾으시는 음식을 입력하세요"}
+        value={searchText}
+        onChangeText={handleSearch}
+      />
+
+      <FlatList
+        style={styles.flatList}
+        data={searchResult}
+        keyExtractor={(item) => item.key}
+        renderItem={({ item }) => (
+          <TouchableOpacity onPress={() => handleTouch(item)}>
+            <Text>{item.name}</Text>
+          </TouchableOpacity>
+        )}
+      />
+      <Button
+        title={"확인"}
+        onPress={() => {
+          navigation.navigate("SearchAnalyzer", { item: searchResult.key });
+          console.log(searchResult.key);
+        }}
+      />
     </View>
   );
 }
+
+const styles = StyleSheet.create({
+  flatList: {
+    height: 300,
+  },
+});

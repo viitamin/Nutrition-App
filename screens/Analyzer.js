@@ -13,20 +13,24 @@ export default function Analyzer({ navigation, route }) {
   const sugarRegex = /당류\s?(\d+\.?\d+)/;
   const proteinRegex = /단백질\s?(\d+\.?\d+)/;
   const fatRegex = /지방\s?(\d+\.?\d+)/;
-  const sFatRegex = /포화지방\s?(\d+\.\d+)/;
+
+  /* const sFatRegex = /포화지방\s?(\d+\.\d+)/;
   const tFatRegex = /트랜스지방\s?(\d+\.?\d+)/;
   const cholesterolRegex = /콜레스테롤\s?(\d+\.?\d+)/;
   const sodiumRegex = /나트륨\s?(\d+\.?\d+)/;
+*/
 
   const calorieMatch = text.match(calorieRegex);
   const carbMatch = text.match(carbRegex);
   const sugarMatch = text.match(sugarRegex);
   const proteinMatch = text.match(proteinRegex);
+
   const fatMatch = text.match(fatRegex);
-  const sFatMatch = text.match(sFatRegex);
+
+  /* const sFatMatch = text.match(sFatRegex);
   const tFatMatch = text.match(tFatRegex);
   const cholesterolMatch = text.match(cholesterolRegex);
-  const sodiumMatch = text.match(sodiumRegex);
+  const sodiumMatch = text.match(sodiumRegex);*/
 
   const nutrient = {
     calorie: calorieMatch ? calorieMatch[1] : 0,
@@ -34,10 +38,10 @@ export default function Analyzer({ navigation, route }) {
     sugar: sugarMatch ? sugarMatch[1] : 0,
     protein: proteinMatch ? proteinMatch[1] : 0,
     fat: fatMatch ? fatMatch[1] : 0,
-    sfat: sFatMatch ? sFatMatch[1] : 0,
+    /* sfat: sFatMatch ? sFatMatch[1] : 0,
     tfat: tFatMatch ? tFatMatch[1] : 0,
     cholesterol: cholesterolMatch ? cholesterolMatch[1] : 0,
-    sodium: sodiumMatch ? sodiumMatch[1] : 0,
+    sodium: sodiumMatch ? sodiumMatch[1] : 0,*/
   };
 
   console.log(nutrient);
@@ -86,6 +90,7 @@ export default function Analyzer({ navigation, route }) {
         {"\n"}
         지방: {nutrient.fat}
         {"\n"}
+        {/*
         포화지방: {nutrient.sfat}
         {"\n"}
         트랜스지방: {nutrient.tfat}
@@ -94,12 +99,9 @@ export default function Analyzer({ navigation, route }) {
         {"\n"}
         나트륨: {nutrient.sodium}
         {"\n"}
+  */}
       </Text>
       <View>
-        <Text>
-          당은 탄수화물의 하위항목, 트랜스지방과 포화지방은 지방의
-          하위항목입니다.
-        </Text>
         <PieChart
           data={NutritionData}
           width={SCREEN_WIDTH}
