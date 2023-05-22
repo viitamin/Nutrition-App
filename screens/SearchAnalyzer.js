@@ -1,18 +1,58 @@
 import React, { useState, useEffect } from "react";
-import { Text, TouchableOpacity, View, Button, Dimensions } from "react-native";
+import {
+  Text,
+  TouchableOpacity,
+  View,
+  Button,
+  Dimensions,
+  Alert,
+} from "react-native";
 import { PieChart } from "react-native-chart-kit";
 import foodData from "../FoodData";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
 export default function SearchAnalyzer({ navigation, route }) {
   const foodKey = route.params.item;
-  console.log(foodKey);
-  console.log(foodData[foodKey]);
   const [calorie, setCalorie] = useState(0);
   const [carb, setCarb] = useState(0);
   const [sugar, setSugar] = useState(0);
   const [protein, setProtein] = useState(0);
   const [fat, setFat] = useState(0);
+  const [foodInfo, setFoodInfo] = useState(foodData[foodKey]);
+
+  const saveFoodData = async () => {
+    await addSaveTime();
+    console.log(foodInfo);
+    const serializedData = JSON.stringify(foodInfo);
+    try {
+      await AsyncStorage.setItem("dataKey", serializedData);
+      Alert.alert("Success", "Data saved successfully.", [
+        { text: "OK", onPress: handleAlertOK },
+      ]);
+    } catch (error) {
+      Alert.alert("Error", "Failed to save data.");
+      console.log("Error saving data:", error);
+    }
+  };
+
+  const addSaveTime = async () => {
+    const curTime = new Date();
+    const year = curTime.getFullYear();
+    const month = curTime.getMonth() + 1;
+    const day = curTime.getDate();
+
+    setFoodInfo((prevData) => ({
+      ...prevData,
+      year: year,
+      month: month,
+      day: day,
+    }));
+  };
+
+  const handleAlertOK = () => {
+    navigation.navigate("Search");
+  };
 
   useEffect(() => {
     setCalorie(foodData[foodKey].calorie);
@@ -20,6 +60,7 @@ export default function SearchAnalyzer({ navigation, route }) {
     setSugar(foodData[foodKey].sugar);
     setFat(foodData[foodKey].fat);
     setProtein(foodData[foodKey].protein);
+    addSaveTime();
   }, [foodKey]);
 
   const chartConfig = {
@@ -77,6 +118,12 @@ export default function SearchAnalyzer({ navigation, route }) {
           accessor="amount"
           backgroundColor="transparent"
           paddingLeft="15"
+        />
+        <Button
+          title={"저장"}
+          onPress={() => {
+            saveFoodData();
+          }}
         />
       </View>
     </View>

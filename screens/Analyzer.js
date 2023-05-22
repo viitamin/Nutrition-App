@@ -1,6 +1,14 @@
 import React, { useState, useEffect } from "react";
-import { Text, TouchableOpacity, View, Button, Dimensions } from "react-native";
+import {
+  Text,
+  TouchableOpacity,
+  View,
+  Button,
+  Dimensions,
+  Alert,
+} from "react-native";
 import { PieChart } from "react-native-chart-kit";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
@@ -42,6 +50,36 @@ export default function Analyzer({ navigation, route }) {
     tfat: tFatMatch ? tFatMatch[1] : 0,
     cholesterol: cholesterolMatch ? cholesterolMatch[1] : 0,
     sodium: sodiumMatch ? sodiumMatch[1] : 0,*/
+  };
+  //여기서부터 nutrient활용해서 작성하면됨
+
+  const handleSaveData = async () => {
+    addSaveTime();
+    console.log(nutrient);
+    const serializedData = JSON.stringify(nutrient);
+    try {
+      await AsyncStorage.setItem("dataKey", serializedData);
+      Alert.alert("Success", "Data saved successfully.", [
+        { text: "OK", onPress: handleAlertOK },
+      ]);
+    } catch (error) {
+      Alert.alert("Error", "Failed to save data.");
+      console.log("Error saving data:", error);
+    }
+  };
+
+  const addSaveTime = () => {
+    const curTime = new Date();
+    const year = curTime.getFullYear();
+    const month = curTime.getMonth() + 1;
+    const day = curTime.getDate();
+    nutrient.year = year;
+    nutrient.month = month;
+    nutrient.day = day;
+  };
+
+  const handleAlertOK = () => {
+    navigation.navigate("Home");
   };
 
   console.log(nutrient);
@@ -113,7 +151,13 @@ export default function Analyzer({ navigation, route }) {
         />
       </View>
 
-      <Text onPress={() => navigation.navigate("Home")}>저장후 홈으로</Text>
+      <Text
+        onPress={() => {
+          handleSaveData();
+        }}
+      >
+        저장후 홈으로
+      </Text>
       <Button
         title={"Scanner"}
         onPress={() => navigation.navigate("Scanner")}
