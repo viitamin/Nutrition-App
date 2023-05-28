@@ -32,8 +32,8 @@ export default function Search({ navigation }) {
 
   return (
     <View>
-      <Text>{foodName[0].name}</Text>
       <TextInput
+        style={styles.searchBar}
         placeholder={"찾으시는 음식을 입력하세요"}
         value={searchText}
         onChangeText={handleSearch}
@@ -63,5 +63,8 @@ export default function Search({ navigation }) {
 const styles = StyleSheet.create({
   flatList: {
     height: 300,
+  },
+  searchBar: {
+    fontSize: 20,
   },
 });

@@ -58,7 +58,7 @@ export default function Scanner({ navigation }) {
 
   const listUp = (name, nutrient) => {
     if (name !== null) {
-      Alert.alert("이름확인하겠습니다", `${name}이(가) 맞나요?`, [
+      Alert.alert("제품 이름이 ", `${name}이(가) 맞나요?`, [
         {
           text: "Yes",
           onPress: async () => {

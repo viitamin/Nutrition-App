@@ -71,7 +71,7 @@ export default function SearchAnalyzer({ navigation, route }) {
   const NutritionData = [
     {
       name: "탄수화물",
-      amount: parseInt(calorie),
+      amount: parseInt(carb),
       color: "tomato",
       legendFontColor: "#7F7F7F",
       legendFontSize: 15,

@@ -9,6 +9,8 @@ import BodyInfo from "./screens/Login/BodyInfo";
 import Home from "./screens/Home";
 import Search from "./screens/Search";
 import SearchAnalyzer from "./screens/SearchAnalyzer";
+import DayStat from "./screens/DayStat";
+import MonthStat from "./screens/MonthStat";
 
 const Stack = createStackNavigator();
 
@@ -23,6 +25,8 @@ export default function App() {
         <Stack.Screen name="Home" component={Home} />
         <Stack.Screen name="Search" component={Search} />
         <Stack.Screen name="SearchAnalyzer" component={SearchAnalyzer} />
+        <Stack.Screen name="DayStat" component={DayStat} />
+        <Stack.Screen name="MonthStat" component={MonthStat} />
       </Stack.Navigator>
     </NavigationContainer>
   );

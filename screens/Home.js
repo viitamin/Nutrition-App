@@ -9,25 +9,25 @@ import {
   Alert,
 } from "react-native";
 
-export default function Home({ navigation }) {
+export default function Home({ navigation, route }) {
+  const [userName, setUserName] = useState("user");
+  useEffect(() => {
+    setUserName(route.params.name);
+  }, []);
+
   return (
     <View>
-      <Text>user님 안녕하세요</Text>
+      <Text>{userName}님 안녕하세요</Text>
       <View style={styles.lineButtonRow}>
         <TouchableOpacity
           style={styles.buttonStyle}
-          onPress={() => navigation.navigate("Scanner")}
+          onPress={() => navigation.navigate("DayStat")}
         >
-          <Text
-            style={styles.buttonTextStyle}
-            onPress={() => navigation.navigate("Scanner")}
-          >
-            일일통계
-          </Text>
+          <Text style={styles.buttonTextStyle}>일별통계</Text>
         </TouchableOpacity>
         <TouchableOpacity
           style={styles.buttonStyle}
-          onPress={() => navigation.navigate("Scanner")}
+          onPress={() => navigation.navigate("MonthStat")}
         >
           <Text style={styles.buttonTextStyle}>월별통계</Text>
         </TouchableOpacity>
@@ -37,6 +37,12 @@ export default function Home({ navigation }) {
         >
           <Text style={styles.buttonTextStyle}>스캔하기</Text>
         </TouchableOpacity>
+        <TouchableOpacity
+          style={styles.buttonStyle}
+          onPress={() => navigation.navigate("Search")}
+        >
+          <Text style={styles.buttonTextStyle}>검색하기</Text>
+        </TouchableOpacity>
       </View>
     </View>
   );
@@ -44,8 +50,8 @@ export default function Home({ navigation }) {
 
 const styles = StyleSheet.create({
   buttonStyle: {
-    width: 100,
-    height: 100,
+    width: 70,
+    height: 70,
     backgroundColor: "grey",
     justifyContent: "center",
     alignItems: "center",
@@ -58,6 +64,3 @@ const styles = StyleSheet.create({
     alignItems: "center",
   },
 });
-
-
-
