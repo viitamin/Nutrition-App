@@ -15,7 +15,7 @@ import PieGraph from "../components/PieGraph";
 
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
-export default function MonthStat({ navigation }) {
+export default function DayStat({ navigation }) {
   const [foodList, setFoodList] = useState([]);
   const [todayDate, setTodayDate] = useState({ year: 0, month: 0, day: 0 });
   const [totals, setTotals] = useState({
@@ -25,6 +25,26 @@ export default function MonthStat({ navigation }) {
     calorie: 0,
     fat: 0,
   });
+
+  const handleClearButton = async () => {
+    try {
+      await AsyncStorage.clear();
+      setFoodList([]);
+      setTodayDate({ year: 0, month: 0, day: 0 });
+      setTotals({
+        carb: 0,
+        sugar: 0,
+        protein: 0,
+        calorie: 0,
+        fat: 0,
+      });
+
+      Alert.alert("Success", "Data cleared successfully.");
+    } catch (error) {
+      Alert.alert("Error", "Failed to clear data.");
+      console.log("Error clearing data:", error);
+    }
+  };
 
   const setDate = () => {
     const curTime = new Date();
@@ -41,13 +61,13 @@ export default function MonthStat({ navigation }) {
 
   const setData = (data) => {
     setTotals((prevTotals) => ({
-      carb: prevTotals.carb + data.carb,
-      sugar: prevTotals.sugar + data.sugar,
-      protein: prevTotals.protein + data.protein,
-      calorie: prevTotals.calorie + data.calorie,
-      fat: prevTotals.fat + data.fat,
+      carb: prevTotals.carb + parseInt(data.carb),
+      sugar: prevTotals.sugar + parseInt(data.sugar),
+      protein: prevTotals.protein + parseInt(data.protein),
+      calorie: prevTotals.calorie + parseInt(data.calorie),
+      fat: prevTotals.fat + parseInt(data.fat),
     }));
-    setFoodList(foodList.push(data.name));
+    setFoodList((prevFoodList) => [...prevFoodList, data.name]);
   };
 
   const getMonthData = async (todayDate) => {
@@ -57,7 +77,8 @@ export default function MonthStat({ navigation }) {
 
       //데이터 출력
       items.forEach((item) => {
-        const data = JSON.parse(item);
+        const data = JSON.parse(item[1]);
+        console.log(item[1], "하이");
         if (
           data.year === todayDate.year &&
           data.month === todayDate.month &&
@@ -72,23 +93,23 @@ export default function MonthStat({ navigation }) {
   };
 
   useEffect(() => {
-    getMonthData;
-  }, []);
+    getMonthData(todayDate);
+  }, [todayDate]);
 
   return (
     <View>
       <Text>
         {todayDate.year}년 {todayDate.month}월 {todayDate.day}일 현재까지 섭취한
-        영양성분 정보입니다.
+        영양성분 정보입니다.{"\n"}
       </Text>
+      <Text>오늘 하루 섭취 음식</Text>
       {foodList.map((item, index) => (
-        <Text key={index}>
-          {item}
-          {"\n"}
-        </Text>
+        <Text key={index}>{item}</Text>
       ))}
-
+      <Text>{"\n"}</Text>
       <PieGraph data={totals} />
+
+      <Button title={"초기화"} onPress={handleClearButton} />
     </View>
   );
 }

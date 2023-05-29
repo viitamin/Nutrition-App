@@ -16,6 +16,7 @@ export default function Analyzer({ navigation, route }) {
   const itemList = route.params.itemList;
 
   const text = itemList[0].nutrition;
+  const name = itemList[0].name;
   const calorieRegex = /열량\s?(\d+\.?\d+)/;
   const carbRegex = /탄수화물\s?(\d+\.?\d+)/;
   const sugarRegex = /당류\s?(\d+\.?\d+)/;
@@ -41,6 +42,7 @@ export default function Analyzer({ navigation, route }) {
   const sodiumMatch = text.match(sodiumRegex);*/
 
   const nutrient = {
+    name: name,
     calorie: calorieMatch ? calorieMatch[1] : 0,
     carb: carbMatch ? carbMatch[1] : 0,
     sugar: sugarMatch ? sugarMatch[1] : 0,
@@ -54,13 +56,13 @@ export default function Analyzer({ navigation, route }) {
   //여기서부터 nutrient활용해서 작성하면됨
 
   const handleSaveData = async () => {
-    addSaveTime();
     console.log(nutrient);
     const serializedData = JSON.stringify(nutrient);
+    const dataKey = String(nutrient.key);
     try {
-      await AsyncStorage.setItem("dataKey", serializedData);
+      await AsyncStorage.setItem(dataKey, serializedData);
       Alert.alert("Success", "Data saved successfully.", [
-        { text: "OK", onPress: handleAlertOK },
+        { text: "OK", onPress: () => navigation.navigate("Home") },
       ]);
     } catch (error) {
       Alert.alert("Error", "Failed to save data.");
@@ -70,17 +72,15 @@ export default function Analyzer({ navigation, route }) {
 
   const addSaveTime = () => {
     const curTime = new Date();
-    const year = curTime.getFullYear();
-    const month = curTime.getMonth() + 1;
-    const day = curTime.getDate();
-    nutrient.year = year;
-    nutrient.month = month;
-    nutrient.day = day;
+    nutrient.year = curTime.getFullYear();
+    nutrient.month = curTime.getMonth() + 1;
+    nutrient.day = curTime.getDate();
+    nutrient.key = curTime;
   };
 
-  const handleAlertOK = () => {
-    navigation.navigate("Home");
-  };
+  useEffect(() => {
+    addSaveTime();
+  }, [nutrient.name]);
 
   console.log(nutrient);
   const chartConfig = {
@@ -151,17 +151,7 @@ export default function Analyzer({ navigation, route }) {
         />
       </View>
 
-      <Text
-        onPress={() => {
-          handleSaveData();
-        }}
-      >
-        저장후 홈으로
-      </Text>
-      <Button
-        title={"Scanner"}
-        onPress={() => navigation.navigate("Scanner")}
-      />
+      <Button title={"Home"} onPress={handleSaveData} />
     </View>
   );
 }

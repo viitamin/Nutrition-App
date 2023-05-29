@@ -22,11 +22,11 @@ export default function SearchAnalyzer({ navigation, route }) {
   const [foodInfo, setFoodInfo] = useState(foodData[foodKey]);
 
   const saveFoodData = async () => {
-    await addSaveTime();
     console.log(foodInfo);
     const serializedData = JSON.stringify(foodInfo);
+    const dataKey = String(foodInfo.key);
     try {
-      await AsyncStorage.setItem("dataKey", serializedData);
+      await AsyncStorage.setItem(dataKey, serializedData);
       Alert.alert("Success", "Data saved successfully.", [
         { text: "OK", onPress: handleAlertOK },
       ]);
@@ -51,15 +51,15 @@ export default function SearchAnalyzer({ navigation, route }) {
   };
 
   const handleAlertOK = () => {
-    navigation.navigate("Search");
+    navigation.navigate("Home");
   };
 
   useEffect(() => {
-    setCalorie(foodData[foodKey].calorie);
-    setCarb(foodData[foodKey].carb);
-    setSugar(foodData[foodKey].sugar);
-    setFat(foodData[foodKey].fat);
-    setProtein(foodData[foodKey].protein);
+    setCalorie(parseInt(foodData[foodKey].calorie));
+    setCarb(parseInt(foodData[foodKey].carb));
+    setSugar(parseInt(foodData[foodKey].sugar));
+    setFat(parseInt(foodData[foodKey].fat));
+    setProtein(parseInt(foodData[foodKey].protein));
     addSaveTime();
   }, [foodKey]);
 

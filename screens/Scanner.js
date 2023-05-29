@@ -46,6 +46,8 @@ export default function Scanner({ navigation }) {
       quantity: 1,
     };
 
+    newItem.nutrition.name = productName;
+
     const newItems = [...itemList, newItem];
     setItemList(newItems);
   };
@@ -111,6 +113,7 @@ export default function Scanner({ navigation }) {
     setProductName(name);
 
     console.log("상품 이름1: " + name);
+    itemList.name = name;
     listUp(name, nutrient);
   };
 
@@ -129,7 +132,7 @@ export default function Scanner({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.textBg}>
-        <Text style={styles.text}>Scan it!</Text>
+        <Text style={styles.text}>Scanner</Text>
       </View>
       <View style={styles.scannerBox}>
         <BarCodeScanner

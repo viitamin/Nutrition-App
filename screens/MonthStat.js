@@ -16,13 +16,7 @@ import PieGraph from "../components/PieGraph";
 const SCREEN_WIDTH = Dimensions.get("window").width;
 
 export default function MonthStat({ navigation }) {
-  /*
-  const [totalCarb, setTotalCarb] = useState(0);
-  const [totalSugar, setTotalSugar] = useState(0);
-  const [totalCalorie, setTotalCalorie] = useState(0);
-  const [totalProtein, setTotalProtein] = useState(0);
-  const [totalFat, setTotalFat] = useState(0);
-  */
+  const [foodList, setFoodList] = useState([]);
   const [totals, setTotals] = useState({
     carb: 0,
     sugar: 0,
@@ -37,28 +31,23 @@ export default function MonthStat({ navigation }) {
 
   const handleConfirm = () => {
     setIsPickerVisible(false);
-    getMonthData(selectedMonth);
+    //getMonthData(selectedMonth);
   };
 
   const handleMonthChange = (value) => {
-    setSelectedMonth(value);
+    setSelectedMonth(parseInt(value));
   };
 
   const setData = (data) => {
     setTotals((prevTotals) => ({
-      carb: prevTotals.carb + data.carb,
-      sugar: prevTotals.sugar + data.sugar,
-      protein: prevTotals.protein + data.protein,
-      calorie: prevTotals.calorie + data.calorie,
-      fat: prevTotals.fat + data.fat,
+      carb: prevTotals.carb + parseInt(data.carb),
+      sugar: prevTotals.sugar + parseInt(data.sugar),
+      protein: prevTotals.protein + parseInt(data.protein),
+      calorie: prevTotals.calorie + parseInt(data.calorie),
+      fat: prevTotals.fat + parseInt(data.fat),
     }));
-  };
-
-  const example = async () => {
-    const keys = await AsyncStorage.getAllKeys();
-    const items = await AsyncStorage.multiGet(keys);
-    console.log(items[0], items[1]);
-    //데이터 출력
+    setFoodList((prevFoodList) => [...prevFoodList, data.name]);
+    console.log(totals);
   };
 
   const getMonthData = async (targetMonth) => {
@@ -68,7 +57,7 @@ export default function MonthStat({ navigation }) {
 
       //데이터 출력
       items.forEach((item) => {
-        const data = JSON.parse(item);
+        const data = JSON.parse(item[1]);
         if (data.month === targetMonth) {
           setData(data);
         }
@@ -78,6 +67,10 @@ export default function MonthStat({ navigation }) {
     }
   };
 
+  useEffect(() => {
+    getMonthData(selectedMonth);
+  }, [selectedMonth]);
+
   return (
     <View>
       <Text onPress={handleTouchPicker}>
@@ -85,6 +78,11 @@ export default function MonthStat({ navigation }) {
           ? selectedMonth + "월 영양성분 조회"
           : "조회할 달을 선택하세요"}
       </Text>
+      <Text>이번 달 섭취 음식</Text>
+      {foodList.map((item, index) => (
+        <Text key={index}>{item}</Text>
+      ))}
+      <Text>{"\n"}</Text>
 
       {isPickerVisible && (
         <View>
@@ -94,9 +92,9 @@ export default function MonthStat({ navigation }) {
             selectedValue={selectedMonth}
             onValueChange={handleMonthChange}
           />
-          <PieGraph data={totals} />
         </View>
       )}
+      <PieGraph data={totals} />
     </View>
   );
 }
